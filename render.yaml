@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: inpec360
+    runtime: node
+    plan: free
+    buildCommand: |
+      npm install && npm run build && cd backend && npm install && npm run init-db
+    startCommand: cd backend && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+    healthCheckPath: /api/health
+    healthCheckInterval: 30
+    healthCheckTimeout: 10
+    autoDeploy: true
+    disk:
+      name: inpec360-data
+      mountPath: /opt/render/project/data
+      sizeGB: 1
+    preDeployCommand: |
+      echo "📦 Inicializando aplicação..."
+      mkdir -p data
+      mkdir -p backend/public/images/inspections
